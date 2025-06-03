@@ -145,9 +145,9 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[#717171] ;
   }
   body {
-    @apply bg-background text-foreground bg-black text-white;
+    @apply  bg-background text-foreground bg-black text-white;
   }
 }
