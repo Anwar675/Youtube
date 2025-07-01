@@ -15,7 +15,7 @@ export const StudioUpload = ({
 }: StudioUploadProps) => {
     return (
         <div>
-            <MuxUploader endpoint={endpoint} id={UPLOADER_ID} className="hidden group/uploader" />
+            <MuxUploader onSuccess={onSuccess} endpoint={endpoint} id={UPLOADER_ID} className="hidden group/uploader" />
             <MuxUploaderDrop muxUploader={UPLOADER_ID} className="group/drop">
                 <div slot="heading" className="flex flex-col items-center gap-6">
                     <div className="flex items-center justify-center gap-2 rounded-full bg-gray-600 h-32 w-32">

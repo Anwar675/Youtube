@@ -106,16 +106,16 @@ export const POST = async (request: Request) => {
       break
     }
     case "video.asset.track.ready": {
-
-      console.log("Trackingg readdy ")
+      
+      
       const data = payload.data as VideoAssetTrackReadyWebhookEvent["data"] & {
-        assert_id: string
+        asset_id: string
       }
 
-      const assetId = data.assert_id
+      const assetId = data.asset_id
       const trackId = data.id
       const status = data.status
-
+      
       if(!assetId) {
         return new Response("Missing upload ID", {status: 400})
       }

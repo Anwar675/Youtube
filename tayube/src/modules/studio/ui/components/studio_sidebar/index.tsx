@@ -22,7 +22,7 @@ export const StudioSidbar = () => {
                         <StudioSidebarHeader />
                         <SidebarMenuItem>
                             <SidebarMenuButton isActive tooltip="Exit studio" asChild>
-                                <Link href="/studio/videos">
+                                <Link href="/studio">
                                     <VideoIcon className="size-5 text-white" />
                                     <span className="text-sm text-white ">Content</span>
                                 </Link>
