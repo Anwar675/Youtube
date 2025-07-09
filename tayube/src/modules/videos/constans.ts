@@ -1,0 +1,1 @@
+export const THUMNAIL_FALLBACK = "/placeholer.jpeg"

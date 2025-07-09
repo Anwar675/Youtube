@@ -1,4 +1,5 @@
 import { formatDuration } from "@/lib/utils";
+import { THUMNAIL_FALLBACK } from "@/modules/videos/constans";
 import Image from "next/image"
 
 interface VideoThumbnailProps {
@@ -20,8 +21,8 @@ export const VideoThhumbnail = ({
     return (
         <div className="relative group ">
             <div className="relative w-full overflow-hidden rounded-xl aspect-video">
-                <Image src={imageUrl ?? "/placeholer.jpeg"} alt={title} fill className="h-full w-full object-cover cursor-pointer group-hover:opacity-0"/>
-                <Image unoptimized={!!previewUrl} src={previewUrl ?? "/placeholer.jpeg"} alt={title} fill className="h-full w-full opacity-0 object-cover cursor-pointer group-hover:opacity-100"/>
+                <Image src={imageUrl ?? THUMNAIL_FALLBACK} alt={title} fill className="h-full w-full object-cover cursor-pointer group-hover:opacity-0"/>
+                <Image unoptimized={!!previewUrl} src={previewUrl ?? THUMNAIL_FALLBACK} alt={title} fill className="h-full w-full opacity-0 object-cover cursor-pointer group-hover:opacity-100"/>
             </div>
             <div className="absolute bottom-2 right-2 px-1 py-0.5 rounde bg-black/80 text-white text-xs font-medium ">
                 {formatDuration(duration)}
