@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@upstash/workflow": "^0.2.15"
+  }
+}
