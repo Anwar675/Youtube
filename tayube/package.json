@@ -5,7 +5,7 @@
   "scripts": {
     "dev:all": "concurrently \"bun run dev:webhook\" \"bun run dev\"  ",
     "dev": "next dev",
-    "dev:webhook": "ngrok http --url=ffa84bfd4253.ngrok-free.app 3000",
+    "dev:webhook": "ngrok http --url=db5b730de582.ngrok-free.app 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@upstash/workflow": "^0.2.15"
+    "@upstash/workflow": "^0.2.15",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.3"
   }
 }

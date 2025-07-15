@@ -6,9 +6,40 @@ import { createTRPCRouter, protectedProduce } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
+import { workflow } from "@/lib/qstash";
 
 
 export const videosRouter = createTRPCRouter({
+    generateTitle: protectedProduce
+        .input(z.object({id: z.string().uuid()}))
+        .mutation(async ({ctx,input}) => {
+            const {id: userId} = ctx.user
+            const {workflowRunId} = await workflow.trigger({
+                url: `${process.env.UPSTASH_WORKFLOW_URL}/api/videos/workflows/description`,
+                body: {userId, videoId: input.id}
+            })
+            return workflowRunId
+    }),
+    generateDescription: protectedProduce
+        .input(z.object({id: z.string().uuid()}))
+        .mutation(async ({ctx,input}) => {
+            const {id: userId} = ctx.user
+            const {workflowRunId} = await workflow.trigger({
+                url: `${process.env.UPSTASH_WORKFLOW_URL}/api/videos/workflows/title`,
+                body: {userId, videoId: input.id}
+            })
+            return workflowRunId
+    }),
+    generateThumbnail: protectedProduce
+        .input(z.object({id: z.string().uuid()}))
+        .mutation(async ({ctx,input}) => {
+            const {id: userId} = ctx.user
+            const {workflowRunId} = await workflow.trigger({
+                url: `${process.env.UPSTASH_WORKFLOW_URL}/api/videos/workflows/title`,
+                body: {userId, videoId: input.id}
+            })
+            return workflowRunId
+    }),
     restoreThumbnail: protectedProduce
     .input(z.object(({id: z.string().uuid()})))
     .mutation(async ({ctx,input}) => {
@@ -121,7 +152,7 @@ export const videosRouter = createTRPCRouter({
                 userId,
                 title: "Untitled",
                 muxStatus: "waiting",
-              
+                
                 muxUploadId: upload.id,
                 
             })
