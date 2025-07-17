@@ -62,7 +62,7 @@ export const ourFileRouter = {
       await db
       .update(videos)
       .set({
-        thumbnailUrl: file.url,
+        thumbnailUrl: file.ufsUrl,
         thumbnailKey: file.key
 
       })
