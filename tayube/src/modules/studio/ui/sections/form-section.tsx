@@ -96,21 +96,21 @@ const FormSectionSkeleton = () => {
         <div className="flex flex-col gap-4 bg-[#f9f9f9] rounded-xl overflow-hidden">
           <Skeleton className='aspect-video'/>
           <div className="px-4 py-4 space-y-6">
-            <div className="space-x-2">
+            <div className="flex items-center space-x-2">
               <Skeleton className='h-4 w-20' />
               <Skeleton className='h-5 w-full' />
             </div>
-            <div className="space-x-2">
+            <div className="space-y-2">
               <Skeleton className='h-4 w-24' />
               <Skeleton className='h-5 w-32' />
             </div>
-            <div className="space-x-2">
+            <div className="space-y-2">
               <Skeleton className='h-4 w-24' />
               <Skeleton className='h-5 w-32' />
             </div>
           </div>
         </div>
-        <div className="space-x-2">
+        <div className="space-y-2">
             <Skeleton className='h-4 w-20' />
             <Skeleton className='h-5 w-full' />
           </div>
@@ -368,11 +368,11 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
                 </div>
                 <div className="p-4 flex flex-col gap-y-6">
                   <div className="flex justify-between items-center gap-x-2">
-                    <p className="text-white text-xs">Video link</p>
-                    <div className="flex items-center gap-x-2">
+                    <p className="text-white mr-5 text-xs">Video link</p>
+                    <div className="flex flex-1 items-center gap-x-2">
                       <Link href={`/videos/${video.id}`}>
                         <p className="line-clamp-1 text-sm text-blue-500">
-                          http://localhost:3000/12323
+                          {fullUrl}
                         </p>
                       </Link>
                       <Button

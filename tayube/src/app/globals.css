@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 
 
 @layer base {
@@ -145,9 +147,10 @@
 
 @layer base {
   * {
-    @apply border-[#717171] ;
+    @apply border-[#717171] font-sans ;
   }
   body {
-    @apply  bg-background text-foreground bg-black text-white;
+    @apply  bg-background text-foreground bg-black  text-white;
+    
   }
 }

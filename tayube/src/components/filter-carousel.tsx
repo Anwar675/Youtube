@@ -64,7 +64,7 @@ export const FilterCarousel = ({
       >
         <CarouselContent className="-ml-3">
           {!isLoading && (
-            <CarouselItem onClick={() => onSelect(null)} className="pl-5 basis-auto">
+            <CarouselItem onClick={() => onSelect(null)} className="pl-5 basis-auto cursor-pointer">
               <Badge
                 className=" px-3 py-1 rounded-lg  cursor-pointer whitespace-nowrap text-sm"
                 variant={!value  ? 'secondary' : 'default'}
@@ -92,8 +92,8 @@ export const FilterCarousel = ({
               </CarouselItem>
             ))}
         </CarouselContent>
-        <CarouselPrevious className="bg-inherit left-0 z-20" />
-        <CarouselNext className="bg-inherit right-0 z-20" />
+        <CarouselPrevious  className="bg-inherit cursor-pointer left-0 z-20" />
+        <CarouselNext className="bg-inherit cursor-pointer right-0 z-20" />
       </Carousel>
       <div
         className={cn(
