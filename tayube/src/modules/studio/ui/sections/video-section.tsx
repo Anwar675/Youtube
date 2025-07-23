@@ -85,6 +85,9 @@ const VideoSectionSupense = () => {
       }) => lastPage.nextCursor,
     }
   );
+  console.log('pages:', videos.pages)
+  console.log('hasNextPage:', query.hasNextPage)
+
   return (
     <div>
       <div className="border-y">
@@ -113,7 +116,7 @@ const VideoSectionSupense = () => {
                         </div>
                         <div className='flex flex-col overflow-hidden gap-y-1'>
                           <span className='text-sm line-clamp-1'>{video.title}</span>
-                          <span className='text-sm text-muted-foreground'>{video.description || "no description"}</span>
+                          <span className='text-sm text-muted-foreground line-clamp-2'>{video.description || "no description"}</span>
                         </div>
                       </div>
                     </TableCell>

@@ -1,19 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { UserAvata } from "@/components/user-avatar";
-import { users } from "@/db/schema";
-import { SupscriptionButton } from "@/modules/supscriptions/ui/components/supscription-button";
+import { useSubscription } from "@/modules/subscriptions/hooks/use-subscription";
+
+
+import { SupscriptionButton } from "@/modules/subscriptions/ui/components/supscription-button";
 import { UserInfor } from "@/modules/users/ui/components/user-infor";
 import { VideoGetOneOutput } from "@/modules/videos/types";
 import { useAuth } from "@clerk/nextjs";
+
 import Link from "next/link";
 
 interface VideoOwnerProps {
     user: VideoGetOneOutput["user"]
     videoId: string
 }
-
+ 
 export const VideoOwner = ({user, videoId}: VideoOwnerProps) => {
+    console.log(user.subcriberCount)
     const {userId: clerkUserId} = useAuth()
+    const {isPending, onClick} = useSubscription({
+        userId: user.id,
+        isSubscribed: user.viewerSubscribed,
+        fromVideoId: videoId
+    })
     return (
         <div className="flex items-center sm:items-start justify-between sm:justify-start gap-3 min-w-0"> 
             <Link href={`/users/${user.id}`}>
@@ -22,7 +31,7 @@ export const VideoOwner = ({user, videoId}: VideoOwnerProps) => {
                     <div>
                         <UserInfor size="lg" name={user.name} />
                         <span className="text-sm text-muted-foreground line-clamp-1">
-                            {0} subcribers
+                            {user.subcriberCount} subcribers
                         </span>
                     </div>
                 </div>
@@ -34,7 +43,7 @@ export const VideoOwner = ({user, videoId}: VideoOwnerProps) => {
                     </Link>
                 </Button>
             ): (
-                <SupscriptionButton onClick={() => {}} disabled={false} isSubcribled={false} className="flex-none" />
+                <SupscriptionButton onClick={onClick} disabled={isPending} isSubcribled={user.viewerSubscribed} className="flex-none" />
             )}
         </div>
     )
