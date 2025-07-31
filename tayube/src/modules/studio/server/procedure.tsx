@@ -51,7 +51,7 @@ export const studioRouter = createTRPCRouter({
                     lt(videos.id, cursor.id)
                   )
                 )
-              : undefined
+              : undefined 
           )
         )
         .orderBy(desc(videos.updateAt), desc(videos.id))

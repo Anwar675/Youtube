@@ -16,7 +16,6 @@ interface VideoOwnerProps {
 }
  
 export const VideoOwner = ({user, videoId}: VideoOwnerProps) => {
-    console.log(user.subcriberCount)
     const {userId: clerkUserId} = useAuth()
     const {isPending, onClick} = useSubscription({
         userId: user.id,

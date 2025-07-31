@@ -1,7 +1,7 @@
 import { integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid , primaryKey} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import {createInsertSchema,createUpdateSchema,createSelectSchema} from "drizzle-zod"
-import { z } from "zod";
+import { z, ZodObject } from "zod";
 
 
 
@@ -25,7 +25,8 @@ export const userRelations = relations(users, ({many}) => ({
     }),
     subscribers: many(subscriptions, {
         relationName: "subscriptions_creator_id_fkey"
-    })
+    }),
+    comments: many(comments)
 }))
 
 export const subscriptions = pgTable("subscriptions", {
@@ -41,12 +42,12 @@ export const subscriptions = pgTable("subscriptions", {
 ])
 
 export const subscriptionsRelations = relations(subscriptions, ({one}) => ({
-    viewerId: one(users, {
+    viewer: one(users, {
         fields: [subscriptions.viewerId],
         references: [users.id],
         relationName: "subscriptions_viewer_id_fkey"
     }),
-    creatorId: one(users, {
+    creator: one(users, {
         fields: [subscriptions.creatorId],
         references: [users.id],
         relationName: "subscriptions_creator_id_fkey"
@@ -110,8 +111,35 @@ export const videoRelations = relations(videos, ({one, many})=> ({
         references: [categories.id]
     }),
     views: many(videoViews),
-    reactions:  many(videoReactions)
+    reactions:  many(videoReactions),
+    comments: many(comments)
 }))
+
+export const comments = pgTable("comments", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id, {onDelete: "cascade"}).notNull(),
+    videoId: uuid("video_id").references(() => videos.id, {onDelete: "cascade"}).notNull(),
+    value: text('value').notNull(),
+    createAt: timestamp("create_at").defaultNow().notNull(),
+    updateAt: timestamp("update_at").defaultNow().notNull(),
+})
+      
+export const commentRelations = relations(comments,  ({one, many}) => ({
+    user:one(users, {
+        fields: [comments.userId],
+        references: [users.id]
+    }),
+    video:one(videos, {
+        fields: [comments.videoId],
+        references: [videos.id]
+    })
+}))
+
+export const commentSelectSchema = createSelectSchema(comments) as unknown as z.ZodType;
+export const commentInsertSchema = createInsertSchema(comments) as unknown as z.ZodObject<any>
+export const commentUpdateSchema = createUpdateSchema(comments)
+
+
 
 export const videoViews = pgTable("video_views", {
     userId: uuid("user_id").references(() => users.id, {onDelete: "cascade"}).notNull(),
