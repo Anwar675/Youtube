@@ -5,6 +5,7 @@ import { DEFAULT_LIMIT } from "@/constans"
 import { CommentForm } from "@/modules/comments/ui/components/comment-form"
 import { CommentItems } from "@/modules/comments/ui/components/comment-item"
 import { trpc } from "@/trpc/client"
+import { Loader2Icon } from "lucide-react"
 import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 
@@ -17,11 +18,19 @@ interface CommentsSectionProps {
 
 export const CommentsSection = ({videoId}: CommentsSectionProps) => {
     return (
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<CommentSkeleton />}>
             <ErrorBoundary fallback={<p>Error</p>}>
                 <CommentsSectionSuspense videoId={videoId} />
             </ErrorBoundary>
         </Suspense>
+    )
+}
+
+const CommentSkeleton = () => {
+    return (
+        <div className="mt-6 flex justify-center items-center">
+            <Loader2Icon className="text-muted-foreground size-7 animate-spin" />
+        </div>
     )
 }
 
@@ -37,7 +46,7 @@ export const CommentsSectionSuspense = ({videoId}: CommentsSectionProps) => {
     return (
         <div className="mt-6">
             <div className="flex flex-col gap-6">
-                <h1 className="text-xl font-bold"> {comments.pages[0].items[0].totalCount} Comments</h1>
+                <h1 className="text-xl font-bold"> {comments.pages[0].totalCount} Comments</h1>
                 <CommentForm  videoId={videoId}/>
             </div>
             <div className="flex flex-col gap-4 mt-2">

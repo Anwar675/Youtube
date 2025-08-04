@@ -18,7 +18,7 @@ export const SupscriptionButton = ({
     size
 }: SupscriptionButtonProps) => {
     return (
-        <Button size={size} onClick={onClick} disabled={disabled} variant={isSubcribled ? "new": "default"} className={cn("rounded-full", className)}>
+        <Button size={size} onClick={onClick} disabled={disabled} variant={isSubcribled ? "new": "white"} className={cn("rounded-full", className)}>
             {isSubcribled ? "Unsubcribe" : "Subcribe"}
         </Button>
     )
