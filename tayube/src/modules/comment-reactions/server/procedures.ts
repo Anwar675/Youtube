@@ -8,75 +8,81 @@ export const commentReactionsRouter = createTRPCRouter({
     like: protectedProduce
         .input(z.object({commentId: z.string().uuid()}))
         .mutation(async ({input,ctx}) => {
-            const {commentId} = input
-            const {id: userId} = ctx.user
-            const [existingCommentReactionlike] = await db
+            const {commentId} = input;
+            const {id: userId} = ctx.user;
+            
+            const [existingCommentReaction] = await db
                 .select()
                 .from(commentReactions)
                 .where(and(
                     eq(commentReactions.commentId, commentId),
                     eq(commentReactions.userId, userId),
                     eq(commentReactions.type, "like")
-                ))
-                if(existingCommentReactionlike) {
-                    const [deletedViewReaction] = await db
-                        .delete(commentReactions)
-                        .where(
-                            and(
-                                eq(commentReactions.userId, userId),
-                                eq(commentReactions.commentId, commentId)
-                            )
+                ));
+                
+            if(existingCommentReaction) {
+                const [deletedCommentReaction] = await db
+                    .delete(commentReactions)
+                    .where(
+                        and(
+                            eq(commentReactions.userId, userId),
+                            eq(commentReactions.commentId, commentId)
                         )
-                        .returning()
-                    return deletedViewReaction
-                }
-                const [createdCommentReactions] = await db
-                    .insert(commentReactions)
-                    .values({userId, commentId, type: "like"})
-                    .onConflictDoUpdate({
-                        target: [commentReactions.userId, commentReactions.commentId],
-                        set: {
-                            type:"like"
-                        }
-                    })
-                    .returning()
-                return createdCommentReactions
+                    )
+                    .returning();
+                return deletedCommentReaction;
+            }
+            
+            const [createdCommentReaction] = await db
+                .insert(commentReactions)
+                .values({userId, commentId, type: "like"})
+                .onConflictDoUpdate({
+                    target: [commentReactions.userId, commentReactions.commentId],
+                    set: {
+                        type:"like"
+                    }
+                })
+                .returning();
+            return createdCommentReaction;
         }),
     dislike: protectedProduce
         .input(z.object({commentId: z.string().uuid()}))
         .mutation(async ({input,ctx}) => {
-            const {id: userId} = ctx.user
-            const {commentId} = input
-            const [existingVideoReactiondislike] = await db
+            const {id: userId} = ctx.user;
+            const {commentId} = input;
+            
+            const [existingCommentReaction] = await db
                 .select()
                 .from(commentReactions)
                 .where(and(
                     eq(commentReactions.commentId, commentId),
                     eq(commentReactions.userId, userId),
                     eq(commentReactions.type, "dislike")
-                ))
-                if(existingVideoReactiondislike) {
-                    const [deletedViewReaction] = await db
-                        .delete(commentReactions)
-                        .where(
-                            and(
-                                eq(commentReactions.userId, userId),
-                                eq(commentReactions.commentId, commentId)
-                            )
+                ));
+                
+            if(existingCommentReaction) {
+                const [deletedCommentReaction] = await db
+                    .delete(commentReactions)
+                    .where(
+                        and(
+                            eq(commentReactions.userId, userId),
+                            eq(commentReactions.commentId, commentId)
                         )
-                        .returning()
-                    return deletedViewReaction
-                }
-                const [createdCommentReactions] = await db
-                    .insert(commentReactions)
-                    .values({userId, commentId, type: "dislike"})
-                    .onConflictDoUpdate({
-                        target: [commentReactions.userId, commentReactions.commentId],
-                        set: {
-                            type:"dislike"
-                        }
-                    })
-                    .returning()
-                return createdCommentReactions
+                    )
+                    .returning();
+                return deletedCommentReaction;
+            }
+            
+            const [createdCommentReaction] = await db
+                .insert(commentReactions)
+                .values({userId, commentId, type: "dislike"})
+                .onConflictDoUpdate({
+                    target: [commentReactions.userId, commentReactions.commentId],
+                    set: {
+                        type:"dislike"
+                    }
+                })
+                .returning();
+            return createdCommentReaction;
         })
-    })
+    });
