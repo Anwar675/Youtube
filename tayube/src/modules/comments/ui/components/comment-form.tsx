@@ -14,9 +14,12 @@ import { z } from "zod"
 interface CommentFormProps {
     videoId: string
     onSuccess?: () => void
+    parentId?: string;
+    onCancel?: () => void; 
+    variant?: "comment"|"reply"
 }
 
-export const CommentForm = ({videoId, onSuccess}: CommentFormProps) => {
+export const CommentForm = ({videoId, onSuccess, onCancel, parentId, variant  ="comment"}: CommentFormProps) => {
     const clerk = useClerk()
     const {user} = useUser()
     const utils = trpc.useUtils()
@@ -26,12 +29,14 @@ export const CommentForm = ({videoId, onSuccess}: CommentFormProps) => {
         resolver: zodResolver(commentInsertSchema.omit({userId:true})),
         defaultValues: {
             videoId: videoId,
+            parentId: parentId,
             value: ""
         }
     })
     const create = trpc.comments.create.useMutation({
         onSuccess: () => {
             utils.comments.getMany.invalidate({videoId});
+            utils.comments.getMany.invalidate({videoId, parentId});
             form.reset();
             toast.success("Commen added");
             onSuccess?.()
@@ -46,6 +51,12 @@ export const CommentForm = ({videoId, onSuccess}: CommentFormProps) => {
     const handleSubmit = (values:z.infer<typeof commentInsertSchema>) => {
         create.mutate(values as { videoId: string; value: string })
     }
+
+    const handleCancel = () => {
+        form.reset()
+        onCancel?.()
+    }
+
     return (
         <Form {...form}>          
             <form onSubmit={form.handleSubmit(handleSubmit)} className="flex gap-4 group">
@@ -54,14 +65,19 @@ export const CommentForm = ({videoId, onSuccess}: CommentFormProps) => {
                     <FormField control={form.control} name="value" render={({field}) => (
                         <FormItem>
                             <FormControl>
-                                <Textarea {...field} placeholder="Add a comment..." className="resize-none bg-transparent overflow-hidden min-h-0" />           
+                                <Textarea {...field} placeholder={variant === 'reply' ? "Reply to this comment..." : "Add a comment..."} className="resize-none bg-transparent overflow-hidden min-h-0" />           
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}/>
                     <div className="justify-end gap-2 mt-2 flex">
+                        {onCancel && (
+                            <Button variant="ghost" type="button" onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        )}
                         <Button type="submit" variant="new" size="sm" disabled={create.isPending}>
-                            Comment
+                            {variant === "reply" ? "Reply" : "Comment"}
                         </Button>
                     </div>
                 </div>
