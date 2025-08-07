@@ -1,4 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 import { twMerge } from 'tailwind-merge';
 
@@ -16,3 +18,9 @@ export const snakeCaseToTitle = (str: string) => {
   return str.replace(/_/g, " ").replace(/\b\w/g, (char) =>char.toUpperCase())
 }
 
+export const formatTime = (date: Date | number) => {
+  return formatDistanceToNow(date, {
+    addSuffix: false,
+    locale: vi,
+  }).replace(/^khoảng\s*/i, '');
+} 
