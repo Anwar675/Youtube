@@ -7,6 +7,7 @@ import { UserAvata } from "@/components/user-avatar";
 import { UserInfor } from "@/modules/users/ui/components/user-infor";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { VideoMenu } from "./video-mennu";
+import { useMemo } from "react";
 
 
 const VideoRowCardVariants = cva("group flex min-w-0", {
@@ -47,6 +48,12 @@ export const VideoRowCardSkeleton = () => {
 }
 
 export const VideoRowCard = ({data, size, onRemove}: VideoRowCardProps) => {
+    const compactViews = useMemo(() => {
+        return Intl.NumberFormat("en", {
+            notation: "compact"
+        }).format(data.viewCount)
+    },[data.viewCount])
+    
     return (
         <div className={VideoRowCardVariants({size})}>
             <Link href={`/videos/${data.id}`} className={thumbnailVariants({size})}>
@@ -86,8 +93,8 @@ export const VideoRowCard = ({data, size, onRemove}: VideoRowCardProps) => {
                             <UserInfor size="sm" name={data.user.name} />
                         )}
                         {size === "compact" && (
-                            <p className="text-xs text-muted-foreground">
-                                 {data.viewCount} views ·  {formatTime(data.createAt)} trước
+                            <p className="text-xs text-muted-foreground mt-1">
+                                 {compactViews} views ·  {formatTime(data.createAt)} trước
                             </p>
                         )}
                     </Link>
