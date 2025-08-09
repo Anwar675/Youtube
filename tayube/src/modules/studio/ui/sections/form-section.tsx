@@ -148,6 +148,17 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
       toast.error('something went wrong');
     },
   });
+  const revalidate = trpc.videos.revalidate.useMutation({
+    onSuccess: () => {
+      utils.studio.getMany.invalidate();
+      utils.studio.getOne.invalidate({id: videoId});
+      toast.success('Video revalidated');
+      router.push('/studio');
+    },
+    onError: () => {
+      toast.error('something went wrong');
+    },
+  });
   const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
     onSuccess: () => {
       utils.studio.getMany.invalidate();
@@ -220,9 +231,16 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
                     <MoreVerticalIcon />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="z-10">
+                <DropdownMenuContent align="end" className="z-10 rounded-md bg-[#282828]">
                   <DropdownMenuItem
-                    className="flex items-center bg-gray-800 p-2 mt-3 cursor-pointer "
+                    className="flex items-center  p-2 mt-3 cursor-pointer "
+                    onClick={() => revalidate.mutate({ id: videoId })}
+                  >
+                    <RotateCcwIcon className="size-4 mr-2" />
+                    Revalidate
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex items-center  p-2 mt-3 cursor-pointer "
                     onClick={() => remove.mutate({ id: videoId })}
                   >
                     <TrashIcon className="size-4 mr-2" />
