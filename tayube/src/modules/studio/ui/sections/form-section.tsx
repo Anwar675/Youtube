@@ -52,6 +52,7 @@ import { THUMNAIL_FALLBACK } from '@/modules/videos/constans';
 import { ThumnailUploadModal } from '../components/thumnail-upload-modles';
 import { ThumnailGenerateModal } from '../components/thumnail-generate-modals';
 import { Skeleton } from '@/components/ui/skeleton';
+import { APP_URL } from '@/constans';
 
 interface FormSectionProps {
   videoId: string;
@@ -198,7 +199,7 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
     update.mutateAsync(data);
   };
   const fullUrl = `${
-    process.env.VERCEL_URL || 'http://localhost:3000 '
+    APP_URL || 'http://localhost:3000 '
   }/videos/${videoId}`;
   const [isCopy, setIsCopy] = useState(false);
   const onCopy = async () => {
