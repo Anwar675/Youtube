@@ -199,7 +199,7 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
     update.mutateAsync(data);
   };
   const fullUrl = `${
-    APP_URL || 'http://localhost:3000 '
+    APP_URL 
   }/videos/${videoId}`;
   const [isCopy, setIsCopy] = useState(false);
   const onCopy = async () => {

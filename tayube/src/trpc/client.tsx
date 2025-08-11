@@ -24,7 +24,7 @@ function getUrl() {
     if (typeof window !== 'undefined') return '';
     console.log({appUrl: APP_URL})
     if (APP_URL) return `https://${APP_URL}`;
-    return 'http://localhost:3000';
+    return APP_URL;
   })();
   return `${base}/api/trpc`;
 }
