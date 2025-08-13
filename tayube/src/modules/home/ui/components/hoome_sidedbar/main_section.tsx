@@ -8,7 +8,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAuth, useClerk } from '@clerk/nextjs';
-import { HomeIcon, PlaySquare, Scissors } from 'lucide-react';
+import { FlameIcon, HomeIcon, PlaySquare, Scissors } from 'lucide-react';
 import Link from 'next/link';
 
 const items = [
@@ -29,6 +29,11 @@ const items = [
     icon: PlaySquare,
     auth: true,
   },
+  {
+    title: 'Trending',
+    url: '/feed/trending',
+    icon: FlameIcon,
+  }
 ];
 
 export const MainSection = () => {
