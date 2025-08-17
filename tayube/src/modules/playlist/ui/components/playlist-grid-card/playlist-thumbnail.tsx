@@ -1,0 +1,41 @@
+import { cn } from "@/lib/utils";
+import { THUMNAIL_FALLBACK } from "@/modules/videos/constans";
+import { ListVideoIcon, PlayIcon } from "lucide-react";
+import Image from "next/image";
+
+interface PlaylistThumbnailProps {
+    title: string;
+    videoCount: number
+    className?: string
+    imageUrl?:string|null
+}
+
+export const PlaylistThumbnail = ({
+    title,
+    videoCount,
+    className,
+    imageUrl
+}: PlaylistThumbnailProps) => {
+    return (
+        <div className={cn(("relative pt-3"), className)}>
+            <div className="relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[97%] overflow-hidden rounded-xl aspect-video bg-white/20"/>
+                <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-[98.5%] overflow-hidden rounded-xl aspect-video bg-white/25"/>
+                <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-[98.5%] overflow-hidden rounded-xl aspect-video bg-white/30"/>
+                <div className="relative overflow-hiddenw-full rounded-xl  aspect-video">
+                    <Image src={imageUrl || THUMNAIL_FALLBACK} alt={title} className="w-full h-full object-cover rounded-xl" fill/>
+                </div>
+                <div className="absolute inset-0 bg-black/70 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="flex items-center gap-x-2">
+                        <PlayIcon  className="size-4 text-white fill-white" />
+                        <span className="text-white font-medium">Play all</span>
+                    </div>
+                </div>
+            </div>
+            <div className="absolute bottom-2 right-2 px-1 py-0.5 rounded bg-black/80 text-white text-xs font-medium flex items-center gap-x-1">
+                <ListVideoIcon className="size-4" />
+                {videoCount} videos
+            </div>
+        </div>
+    )
+}
