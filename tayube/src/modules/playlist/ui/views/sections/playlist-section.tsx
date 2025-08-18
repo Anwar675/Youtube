@@ -49,7 +49,7 @@ const PlaylistsSectionSuspense = () => {
             </div>
             
             <InfinitineSroll 
-                hasNextPage={query.hasNextPage}  isFetchingNextpage={query.isFetchingNextPage} fetchNextPage={query.fetchNextPage}
+                hasNextPage={query.hasNextPage}  isFetchingNextpage={query.isFetchingNextPage} fetchNextPage={query.fetchNextPage} isManual
             />
         </div>
     )
