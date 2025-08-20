@@ -15,7 +15,7 @@ interface SuggestSectionProps {
 }
 export const SuggestSection = ({videoId,isManual}: SuggestSectionProps) => {
     return (
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<SuggestSectionSkeleton />}>
             <ErrorBoundary fallback={<p>Error...</p>}>
                 <SuggestSectionSupspense videoId={videoId} isManual={isManual} />
             </ErrorBoundary>
@@ -24,6 +24,7 @@ export const SuggestSection = ({videoId,isManual}: SuggestSectionProps) => {
 }
 
 const SuggestSectionSkeleton = () => {
+    return (
     <>
         <div className="hidden md:block space-y-3">
             {Array.from({length: 8}).map((_,index) => (
@@ -35,7 +36,7 @@ const SuggestSectionSkeleton = () => {
                 <VideoGridCardSkeleton key={index}  />
             ))}
         </div>
-    </>
+    </>)
 }
 
 const SuggestSectionSupspense = ({videoId,isManual}: SuggestSectionProps) => {

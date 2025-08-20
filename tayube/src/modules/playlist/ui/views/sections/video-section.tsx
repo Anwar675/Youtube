@@ -6,19 +6,22 @@ import { VideoRowCard, VideoRowCardSkeleton } from "@/modules/videos/server/ui/c
 import { trpc } from "@/trpc/client"
 import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
+import { toast } from "sonner"
 
-
-export const HistoryVideosSection = () =>{
+interface VideoSectionProps {
+    playlistId: string
+}
+export const VideosSection = (props: VideoSectionProps) =>{
     return (
-        <Suspense fallback={<HistoryVideosSectionSkeleton />}>
+        <Suspense fallback={<VideosSectionSkeleton />}>
             <ErrorBoundary fallback={<p>Error...</p>}>
-                <HistoryVideosSectionSuspense  />
+                <VideosSectionSuspense {...props} />
             </ErrorBoundary>
         </Suspense>
     )
 }
 
-const HistoryVideosSectionSkeleton = () => {
+const VideosSectionSkeleton = () => {
     return (
         <div>
             <div className="flex flex-col gap-4 gap-y-5 md:hidden"> 
@@ -36,8 +39,9 @@ const HistoryVideosSectionSkeleton = () => {
     ) 
 }
 
-const HistoryVideosSectionSuspense = () => {
-    const [videos, query] = trpc.playlist.getHistory.useSuspenseInfiniteQuery({
+const VideosSectionSuspense = ({playlistId}: VideoSectionProps) => {
+    const [videos, query] = trpc.playlist.getVideos.useSuspenseInfiniteQuery({
+            playlistId,
            limit:DEFAULT_LIMIT
     },
     {
@@ -45,16 +49,30 @@ const HistoryVideosSectionSuspense = () => {
             nextCursor: { id: string; updateAt: Date } | null;
         }) => lastPage.nextCursor,
     })
+    const utils = trpc.useUtils()
+    const removeVideo = trpc.playlist.removeVideo.useMutation({
+        onSuccess: (data) => {
+            toast.success("video remove from playlist")
+            utils.playlist.getMany.invalidate()
+            utils.playlist.getManyForVideo.invalidate({videoId: data.videoId})
+            utils.playlist.getOne.invalidate({id: data.playlistId})
+            utils.playlist.getVideos.invalidate({playlistId: data.playlistId})
+        },
+        onError: () => {
+            toast.error("something went wrong ")
+        }
+    })
+
     return (
         <div>
             <div className="flex flex-col gap-4 gap-y-5 md:hidden"> 
                 {videos.pages.flatMap((page) => page.items).map((video) => (
-                    <VideoGridCard key={video.id} data={video} />
+                    <VideoGridCard key={video.id} data={video} onRemove={() => removeVideo.mutate({playlistId, videoId:video.id})} />
                 ))}
             </div>
             <div className="hidden flex-col gap-4 gap-y-5 md:flex"> 
                 {videos.pages.flatMap((page) => page.items).map((video) => (
-                    <VideoRowCard key={video.id} data={video} />
+                    <VideoRowCard key={video.id} data={video} onRemove={() => removeVideo.mutate({playlistId, videoId:video.id})} />
                 ))}
             </div>
             <InfinitineSroll 
