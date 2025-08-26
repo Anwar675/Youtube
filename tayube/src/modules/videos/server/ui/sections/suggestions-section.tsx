@@ -9,10 +9,14 @@ import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 
 
+
 interface SuggestSectionProps {
     videoId: string;
     isManual?: boolean
 }
+
+
+
 export const SuggestSection = ({videoId,isManual}: SuggestSectionProps) => {
     return (
         <Suspense fallback={<SuggestSectionSkeleton />}>
