@@ -18,8 +18,8 @@ export const CommentReplies = ({
         videoId,
         parentId
     }, {
-        ageParam: (lastPage: {
-          getNextP  nextCursor: { id: string; updateAt: Date } | null;
+        getNextPageParam: (lastPage: {
+            nextCursor: { id: string; updateAt: Date } | null;
         }) => lastPage.nextCursor,
     })
     return (

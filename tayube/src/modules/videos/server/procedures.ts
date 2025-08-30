@@ -85,6 +85,90 @@ export const videosRouter = createTRPCRouter({
             nextCursor,
           };
     }),
+    
+
+    getShorts: baseProcedure
+    .input(
+      z.object({
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            updateAt: z.date(),
+          })
+          .nullish(),
+        limit: z.number().min(1).max(100),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { cursor, limit } = input;
+      const {ClerkUserId} =ctx
+      let userId
+      const [user] = await db
+          .select()
+          .from(users)
+          .where(inArray(users.clerkId, ClerkUserId ? [ClerkUserId]: []))
+      if(user) {
+          userId = user.id
+      }
+      const viewerReactions = db.$with("viewer_reactions").as(
+          db 
+              .select({
+                  videoId: videoReactions.videoId, 
+                  type: videoReactions.type
+              })
+              .from(videoReactions)
+              .where(inArray(videoReactions.userId, userId ? [userId] : []))
+      )
+      
+      const data = await db
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likeCount: db.$count(
+            videoReactions,
+            and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, "like"))
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, "dislike"))
+          ),
+          viewerReaction: viewerReactions.type
+         
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .where(
+          and(
+            eq(videos.visibility, "public"),
+            lt(videos.duration, 30_000),
+            cursor
+              ? or(
+                  lt(videos.updateAt, cursor.updateAt),
+                  and(eq(videos.updateAt, cursor.updateAt), lt(videos.id, cursor.id))
+                )
+              : undefined
+          )
+        )
+        .orderBy(desc(videos.updateAt), desc(videos.id))
+        .limit(limit + 1);
+
+      const hasMore = data.length > limit;
+      const items = hasMore ? data.slice(0, -1) : data;
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? {
+            id: lastItem.id,
+            updateAt: lastItem.updateAt,
+          }
+        : null;
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
     getTrending: baseProcedure
     .input(
       z.object({
@@ -194,7 +278,8 @@ export const videosRouter = createTRPCRouter({
                     eq(videoReactions.type, "like")
                 )),
                 dislikeCount: db.$count(videoReactions, and(
-                    eq(videoReactions.videoId, input.id),
+                  
+                   eq(videoReactions.videoId, input.id),
                     eq(videoReactions.type, "dislike")
                 )),
                 viewerReaction: viewerReactions.type

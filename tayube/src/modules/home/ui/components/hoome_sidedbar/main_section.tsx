@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { trpc } from '@/trpc/client';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { FlameIcon, HomeIcon, PlaySquare, Scissors } from 'lucide-react';
 import Link from 'next/link';
@@ -20,7 +21,7 @@ const items = [
   },
   {
     title: 'Shorts',
-    url: '/feed/shorts',
+    url: '/shorts',
     icon: Scissors,
     
   },
@@ -40,6 +41,8 @@ const items = [
 export const MainSection = () => {
   const clerk = useClerk()
   const {isSignedIn} = useAuth()
+  const { data } = trpc.videos.getShorts.useQuery({ limit: 1 });
+  const firstShort = data?.items?.[0]?.id;
   const pathname= usePathname()
   return (
     <SidebarGroup>
@@ -60,7 +63,7 @@ export const MainSection = () => {
                 }}
               >
                 <Link
-                  href={item.url}
+                  href={item.title === 'Shorts' && firstShort ? `/shorts/${firstShort}` : item.url}
                   className="flex text-white items-center py-5 gap-8"
                 >
                   <item.icon size={32} />

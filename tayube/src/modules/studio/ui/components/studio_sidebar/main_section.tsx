@@ -7,6 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { trpc } from '@/trpc/client';
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { HomeIcon, PlaySquare, Scissors } from 'lucide-react';
 import Link from 'next/link';
@@ -19,7 +20,7 @@ const items = [
   },
   {
     title: 'Shorts',
-    url: '/feed/shorts',
+    url: '/shorts',
     icon: Scissors,
     
   },
@@ -34,6 +35,7 @@ const items = [
 export const MainSection = () => {
   const clerk = useClerk()
   const {isSignedIn} = useAuth()
+  
   return (
     <SidebarGroup>
       <SidebarGroupContent>
