@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 import { ShortSwiper } from "../components/short-swiper"
+import { CommentsSection } from "@/modules/videos/server/ui/sections/comment-section"
 
 interface ShortViewsProps {
     shortId?: string 
@@ -23,6 +24,7 @@ export const ShortViews = ({shortId}: ShortViewsProps) => {
         <Suspense fallback={<ShortViewsSkeleton />}>
             <ErrorBoundary fallback={<p>Error...</p>}>
                 <ShortSwiper initialShortId={shortId} />
+                
             </ErrorBoundary>    
         </Suspense>
     )

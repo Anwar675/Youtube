@@ -121,6 +121,7 @@ export const videosRouter = createTRPCRouter({
       )
       
       const data = await db
+        .with(viewerReactions)
         .select({
           ...getTableColumns(videos),
           user: users,
@@ -138,6 +139,7 @@ export const videosRouter = createTRPCRouter({
         })
         .from(videos)
         .innerJoin(users, eq(videos.userId, users.id))
+        .leftJoin(viewerReactions, eq(viewerReactions.videoId, videos.id))
         .where(
           and(
             eq(videos.visibility, "public"),
@@ -426,7 +428,7 @@ export const videosRouter = createTRPCRouter({
     remove: protectedProduce
     .input(z.object({id:z.string().uuid()}))
     .mutation(async ({ctx, input}) => {
-        const {id:userId} = ctx.user
+        const {id: userId} = ctx.user
         const [removedVideo] = await db
         .delete(videos)
         .where(and(

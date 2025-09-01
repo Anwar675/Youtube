@@ -9,16 +9,19 @@ import { VideoReactions } from "@/modules/videos/server/ui/components/video-reac
 
 import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Share2, MoreVertical, Play, Pause } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MessageCircle, Share2 } from "lucide-react";
 
-// Import Swiper CSS
+
+
 import 'swiper/css';
 import 'swiper/css/virtual';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/mousewheel';
 import { UserAvata } from "@/components/user-avatar";
+import { useRouter } from "next/navigation";
+
+import { CommentsSectionShort } from "@/modules/comments/ui/components/\bcomment-short";
 
 interface ShortSwiperProps {
   initialShortId?: string;
@@ -28,17 +31,19 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
   const { isSignedIn } = useAuth();
   const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const router = useRouter()
+  const [isOpenComment, setIsOpenComments] = useState(false)
   
   const utils = trpc.useUtils();
   
-  // Fetch shorts data
+  
   const { data: shortsData, isLoading } = trpc.videos.getShorts.useQuery(
     { limit: 20 },
     {
       refetchOnWindowFocus: false,
     }
   );
-
+  
   const createView = trpc.videoViews.create.useMutation({
     onSuccess: () => {
       if (currentVideoId) {
@@ -53,7 +58,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
     const newVideoId = shortsData?.items[currentIndex]?.id;
     
     if (newVideoId && newVideoId !== currentVideoId) {
-      // Pause current video if exists
+      
       const currentVideo = document.querySelector(`video[data-video-id="${currentVideoId}"]`) as HTMLVideoElement;
       if (currentVideo) {
         currentVideo.pause();
@@ -61,20 +66,30 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
       }
       
       setCurrentVideoId(newVideoId);
+      router.replace(`/shorts/${newVideoId}`, { scroll: false });
       
-      // Create view for new video
+      
       if (!isSignedIn) {
         createView.mutate({ videoId: newVideoId });
       }
     }
   };
 
+  // Find the initial slide index based on initialShortId
+  const initialSlideIndex = shortsData?.items && initialShortId 
+    ? shortsData.items.findIndex(item => item.id === initialShortId) 
+    : 0;
 
   useEffect(() => {
-    if (shortsData?.items?.[0]?.id) {
-      setCurrentVideoId(shortsData.items[0].id);
+    if (shortsData?.items) {
+      // Set current video based on initialShortId or default to first
+      if (initialShortId && shortsData.items.some(item => item.id === initialShortId)) {
+        setCurrentVideoId(initialShortId);
+      } else if (shortsData.items[0]?.id) {
+        setCurrentVideoId(shortsData.items[0].id);
+      }
     }
-  }, [shortsData]);
+  }, [shortsData, initialShortId]);
 
   if (isLoading || !shortsData?.items) {
     return (
@@ -92,8 +107,6 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
     );
   }
 
-
-
   return (
     <div className="h-screen w-full bg-black overflow-hidden">
       <Swiper
@@ -109,6 +122,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
           thresholdDelta: 50
         }}
         onSlideChange={handleSlideChange}
+        initialSlide={initialSlideIndex}
         className="h-full w-full"
         pagination={{
           clickable: true,
@@ -121,7 +135,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
       >
         {shortsData.items.map((short, index) => (
           <SwiperSlide key={short.id} virtualIndex={index} className="flex items-center justify-center">
-            <div className="relative w-full h-full flex  items-center justify-center">
+            <div className="relative w-full h-full flex gap-5 items-center justify-center">
               {/* Video Player */}
               <div className="relative w-full max-w-md  aspect-[9/16] bg-black rounded-lg overflow-hidden">
                 <VideoPlayer
@@ -155,8 +169,10 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="bg-black bg-opacity-50 text-white hover:bg-opacity-70 rounded-full w-12 h-12 p-0 flex flex-col gap-1"
+                  onClick={() => setIsOpenComments(true)}
+                  className="bg-black bg-opacity-50 text-white hover:bg-gray-200 rounded-xl w-12 h-12 p-0 flex flex-col gap-1"
                 >
+                  
                   <MessageCircle className="h-5 w-5" />
                   <span className="text-xs">Bình luận</span>
                 </Button>
@@ -165,7 +181,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="bg-black bg-opacity-50 text-white hover:bg-opacity-70 rounded-full w-12 h-12 p-0 flex flex-col gap-1"
+                  className="bg-black bg-opacity-50 text-white hover:bg-gray-200 rounded-xl w-12 h-12 p-0 flex flex-col gap-1"
                 >
                   <Share2 className="h-5 w-5" />
                   <span className="text-xs">Chia sẻ</span>
@@ -173,20 +189,21 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="bg-black bg-opacity-50 text-white hover:bg-opacity-70 rounded-full w-12 h-12 p-0 flex flex-col gap-1"
+                  className="bg-black bg-opacity-50 text-white hover:bg-gray-200 rounded-xl w-12 h-12 p-0 flex flex-col gap-1"
                 >
                   <Share2 className="h-5 w-5" />
                   {short.viewCount}
                 </Button>
               </div>
-
+              
               {/* Bottom Info */}
-              <div className="absolute bottom-4 left-4 right-20 text-white">
+              <div className="absolute bottom-24 left-4 right-20 text-white">
                 <h3 className="font-bold text-lg mb-2">{short.title}</h3>
                 
                 {/* User Info */}
                 <div className="flex items-center space-x-3">
                   <UserAvata size="lgg" imageUrl={short.user.imageUrl || '/user-logo.svg'} name={short.user.name || "User"} />
+                  <span className="text-whtie text-lg">{short.user.name}</span>
                 </div>
 
                 {/* Description */}
@@ -196,6 +213,13 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                   </p>
                 )}
               </div>
+              {isOpenComment && (                 
+                <CommentsSectionShort 
+                  videoId={short.id} 
+                  onClose={() => setIsOpenComments(false)} 
+                />
+               
+              )}
             </div>
           </SwiperSlide>
         ))}
