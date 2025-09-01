@@ -9,7 +9,7 @@ import { VideoReactions } from "@/modules/videos/server/ui/components/video-reac
 
 import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Share2 } from "lucide-react";
+import { EyeIcon, MessageCircle, Share2 } from "lucide-react";
 
 import type { Swiper as SwiperType } from "swiper";
 
@@ -22,6 +22,7 @@ import { UserAvata } from "@/components/user-avatar";
 import { useRouter } from "next/navigation";
 
 import { CommentsSectionShort } from "@/modules/comments/ui/components/\bcomment-short";
+import Link from "next/link";
 
 interface ShortSwiperProps {
   initialShortId?: string;
@@ -190,7 +191,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                   size="sm"
                   className="bg-black bg-opacity-50 text-white hover:bg-gray-200 rounded-xl w-12 h-12 p-0 flex flex-col gap-1"
                 >
-                  <Share2 className="h-5 w-5" />
+                  <EyeIcon className="h-5 w-5" />
                   {short.viewCount}
                 </Button>
               </div>
@@ -200,14 +201,14 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                 <h3 className="font-bold text-lg mb-2">{short.title}</h3>
                 
                 {/* User Info */}
-                <div className="flex items-center space-x-3">
+                <Link href={`/users/${short.user.id}`} className="flex items-center space-x-3">
                   <UserAvata size="lgg" imageUrl={short.user.imageUrl || '/user-logo.svg'} name={short.user.name || "User"} />
                   <span className="text-whtie text-lg">{short.user.name}</span>
-                </div>
-
+                </Link>
+                  
                 {/* Description */}
                 {short.description && (
-                  <p className="text-sm text-gray-300 mt-2 line-clamp-2">
+                  <p className="text-sm text-gray-400 mt-2 line-clamp-2">
                     {short.description}
                   </p>
                 )}
