@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { UserAvata } from "@/components/user-avatar"
-import { commentInsertSchema } from "@/db/schema"
+
 import { trpc } from "@/trpc/client"
 import { useClerk, useUser } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -19,14 +19,23 @@ interface CommentFormProps {
     variant?: "comment"|"reply"
 }
 
+// Create a form-specific schema instead of using omit() on drizzle-zod schema
+const commentFormSchema = z.object({
+    videoId: z.string().uuid(),
+    parentId: z.string().uuid().optional(),
+    value: z.string().min(1, "Comment cannot be empty")
+});
+
+type CommentFormData = z.infer<typeof commentFormSchema>;
+
 export const CommentForm = ({videoId, onSuccess, onCancel, parentId, variant  ="comment"}: CommentFormProps) => {
     const clerk = useClerk()
     const {user} = useUser()
     const utils = trpc.useUtils()
    
 
-    const form = useForm<z.infer<typeof commentInsertSchema>>({
-        resolver: zodResolver(commentInsertSchema.omit({userId:true})),
+    const form = useForm<CommentFormData>({
+        resolver: zodResolver(commentFormSchema),
         defaultValues: {
             videoId: videoId,
             parentId: parentId,
@@ -38,7 +47,7 @@ export const CommentForm = ({videoId, onSuccess, onCancel, parentId, variant  ="
             utils.comments.getMany.invalidate({videoId});
             utils.comments.getMany.invalidate({videoId, parentId});
             form.reset();
-            toast.success("Commen added");
+            toast.success("Comment added");
             onSuccess?.()
         },
         onError:(error) => {
@@ -48,7 +57,7 @@ export const CommentForm = ({videoId, onSuccess, onCancel, parentId, variant  ="
             }
         }
         })
-    const handleSubmit = (values:z.infer<typeof commentInsertSchema>) => {
+    const handleSubmit = (values: CommentFormData) => {
         create.mutate(values as { videoId: string; value: string })
     }
 

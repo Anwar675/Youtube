@@ -11,7 +11,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share2 } from "lucide-react";
 
-
+import type { Swiper as SwiperType } from "swiper";
 
 import 'swiper/css';
 import 'swiper/css/virtual';
@@ -30,7 +30,7 @@ interface ShortSwiperProps {
 export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
   const { isSignedIn } = useAuth();
   const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  
   const router = useRouter()
   const [isOpenComment, setIsOpenComments] = useState(false)
   
@@ -53,7 +53,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
     }
   });
 
-  const handleSlideChange = (swiper: any) => {
+  const handleSlideChange = (swiper: SwiperType) => {
     const currentIndex = swiper.activeIndex;
     const newVideoId = shortsData?.items[currentIndex]?.id;
     
@@ -62,7 +62,7 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
       const currentVideo = document.querySelector(`video[data-video-id="${currentVideoId}"]`) as HTMLVideoElement;
       if (currentVideo) {
         currentVideo.pause();
-        setIsPlaying(false);
+        
       }
       
       setCurrentVideoId(newVideoId);
@@ -141,7 +141,6 @@ export const ShortSwiper = ({ initialShortId }: ShortSwiperProps) => {
                 <VideoPlayer
                   autoPlay={short.id === currentVideoId}
                   onPlay={() => {
-                    setIsPlaying(true);
                     if (isSignedIn) {
                       createView.mutate({ videoId: short.id });
                     }

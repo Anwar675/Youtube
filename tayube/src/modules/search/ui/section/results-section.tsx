@@ -2,7 +2,6 @@
 
 import { InfinitineSroll } from "@/components/infinite-scroll";
 import { DEFAULT_LIMIT } from "@/constans"
-import { useIsMobile } from "@/hooks/use-mobile";
 import { VideoGridCard } from "@/modules/videos/server/ui/components/video-grid-card";
 import { VideoRowCard, VideoRowCardSkeleton } from "@/modules/videos/server/ui/components/video-row-card";
 import { trpc } from "@/trpc/client"
@@ -43,7 +42,6 @@ const ResultsSectionSkeleton = () => {
 }
 
 const ResultsSectionSuspense =({query, categoryId}: ResultsSectionProps) => {
-    const isMobile = useIsMobile()
     const [results,resultQuery] = trpc.search.getMany.useSuspenseInfiniteQuery({
         query,
         categoryId,

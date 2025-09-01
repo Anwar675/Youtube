@@ -1,8 +1,6 @@
 import { integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid , primaryKey, foreignKey} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import {createInsertSchema,createUpdateSchema,createSelectSchema} from "drizzle-zod"
-import { z } from "zod";
-
 
 
 export const users = pgTable("users", {
@@ -143,9 +141,10 @@ export const videos = pgTable("videos", {
     updateAt: timestamp("update_at").defaultNow().notNull()
 })
 
-export const videoInsertSchema = createInsertSchema(videos) as unknown as z.ZodType;
-export const videoUpdateSchema = createUpdateSchema(videos)  as unknown as z.ZodType;;
-export const videoSelectSchema = createSelectSchema(videos)  as unknown as z.ZodType;
+export const videoInsertSchema = createInsertSchema(videos);
+export const videoUpdateSchema = createUpdateSchema(videos);
+export const videoSelectSchema = createSelectSchema(videos);
+
 
 export const videoRelations = relations(videos, ({one, many})=> ({
     user: one(users, {
@@ -201,10 +200,9 @@ export const commentRelations = relations(comments,  ({one, many}) => ({
     })
 }))
 
-export const commentSelectSchema = createSelectSchema(comments) as unknown as z.ZodType;
-export const commentInsertSchema = createInsertSchema(comments) as unknown as z.ZodObject<any>
-export const commentUpdateSchema = createUpdateSchema(comments)
-
+export const commentSelectSchema = createSelectSchema(comments);
+export const commentInsertSchema = createInsertSchema(comments);
+export const commentUpdateSchema = createUpdateSchema(comments);
 
 export const commentReactions = pgTable("comment_reactions", {
     userId: uuid("user_id").references(() => users.id, {onDelete: "cascade"}).notNull(),
@@ -257,7 +255,7 @@ export const videoViewRelations = relations(videoViews, ({one}) => ({
 
 export const videoViewSelectSchema = createSelectSchema(videoViews)
 export const videoViewInsertSchema = createInsertSchema(videoViews)
-export const videoViewUpdateSchema = createUpdateSchema(videoViews)
+export const videoViewUpdateSchema = createUpdateSchema(videoViews);
 
 
 
@@ -288,4 +286,5 @@ export const videoReactionRelations = relations(videoReactions, ({one}) => ({
 
 export const videoReactionSelectSchema = createSelectSchema(videoReactions)
 export const videoReactionInsertSchema = createInsertSchema(videoReactions)
-export const videoReactionUpdateSchema = createUpdateSchema(videoReactions)
+export const videoReactionUpdateSchema = createUpdateSchema(videoReactions);
+

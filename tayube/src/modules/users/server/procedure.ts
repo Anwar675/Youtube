@@ -3,7 +3,7 @@ import { subscriptions, users, videos } from "@/db/schema";
 import {z} from "zod"
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { and, eq, getTableColumns, inArray, isNotNull, lt, or } from "drizzle-orm";
+import { eq, getTableColumns, inArray, isNotNull} from "drizzle-orm";
 
 
 

@@ -25,7 +25,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { videoUpdateSchema } from '@/db/schema';
 import {
   Form,
   FormControl,
@@ -53,6 +52,29 @@ import { ThumnailUploadModal } from '../components/thumnail-upload-modles';
 import { ThumnailGenerateModal } from '../components/thumnail-generate-modals';
 import { Skeleton } from '@/components/ui/skeleton';
 import { APP_URL } from '@/constans';
+
+// Create a properly typed form schema
+const videoFormSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1).optional(),
+  description: z.string().nullable().optional(),
+  muxStatus: z.string().nullable().optional(),
+  muxAssetId: z.string().nullable().optional(),
+  muxUploadId: z.string().nullable().optional(),
+  muxPlayBackId: z.string().nullable().optional(),
+  muxTrackId: z.string().nullable().optional(),
+  muxTrackStatus: z.string().nullable().optional(),
+  thumbnailUrl: z.string().nullable().optional(),
+  thumbnailKey: z.string().nullable().optional(),
+  duration: z.number().int().optional(),
+  visibility: z.enum(['private', 'public']).optional(),
+  previewUrl: z.string().nullable().optional(),
+  previewkey: z.string().nullable().optional(),
+  categoryId: z.string().uuid().nullable().optional(),
+  userId: z.string().uuid().optional(),
+  createAt: z.date().optional(),
+  updateAt: z.date().optional(),
+});
 
 interface FormSectionProps {
   videoId: string;
@@ -190,12 +212,12 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
     },
   });
 
-  const form = useForm<z.infer<typeof videoUpdateSchema>>({
-    resolver: zodResolver(videoUpdateSchema),
+  const form = useForm<z.infer<typeof videoFormSchema>>({
+    resolver: zodResolver(videoFormSchema),
     defaultValues: video,
   });
 
-  const onSubmit = (data: z.infer<typeof videoUpdateSchema>) => {
+  const onSubmit = (data: z.infer<typeof videoFormSchema>) => {
     update.mutateAsync(data);
   };
   const fullUrl = `${
@@ -302,7 +324,7 @@ const FormSectionSucspense = ({ videoId }: FormSectionProps) => {
                 )}
               />
               <FormField
-                name="thumnailUrl" 
+                name="thumbnailUrl"
                 control={form.control}
                 render={() => (
                   <FormItem>

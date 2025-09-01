@@ -85,8 +85,7 @@ const VideoSectionSupense = () => {
       }) => lastPage.nextCursor,
     }
   );
-  console.log('pages:', videos.pages)
-  console.log('hasNextPage:', query.hasNextPage)
+ 
 
   return (
     <div>

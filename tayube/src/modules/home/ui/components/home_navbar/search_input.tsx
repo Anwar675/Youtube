@@ -1,11 +1,21 @@
 'use client'
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { APP_URL } from "@/constans"
 import { SearchIcon, XIcon } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { Suspense, useState } from "react"
+
 
 export const SearchInput = () => {
+    return (
+        <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+            <SearchInputSuspense />
+        </Suspense>
+    )
+}
+
+const SearchInputSuspense = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
     const query = searchParams.get("query") || ""
@@ -40,7 +50,7 @@ export const SearchInput = () => {
                     </Button>
                 )}
             </div>
-            <button disabled={!value.trim()} type="submit" className="px-4 py-2.5 bg-[#3f3f3f] border rounded-r-full hover:bg-[#d3d3d3] disabled:opacity-50 disabled:cursor-not-allowed border-l-0">
+            <button disabled={!value.trim()} type="submit" className="sm:px-4 sm:py-2.5 px-0 py-0 bg-[#3f3f3f] border rounded-r-full hover:bg-[#d3d3d3] disabled:opacity-50 disabled:cursor-not-allowed border-l-0">
                 <SearchIcon  className="size-5"/>
             </button>
             

@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { trpc } from '@/trpc/client';
+
 import { useAuth, useClerk } from '@clerk/nextjs';
 import { HomeIcon, PlaySquare, Scissors } from 'lucide-react';
 import Link from 'next/link';

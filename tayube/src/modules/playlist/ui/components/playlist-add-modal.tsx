@@ -78,7 +78,7 @@ export const PlaylistAddModal = ({
                             <Button variant="outline" size="icon" className="rounded-full" onClick={() => setCreateModalOpen(true)}>
                                 <PlusIcon className="text-black" />
                             </Button>
-                            <p className="text-sm ml-5 ">Create a playlist, you don't have one  </p>
+                            <p className="text-sm ml-5 ">Create a playlist, you dont have one  </p>
                         </div>
                     ):(
                     playlists?.pages

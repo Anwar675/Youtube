@@ -1,10 +1,9 @@
-
 import { ShortViews } from "@/modules/shorts/ui/views/short-view"
 import { HydrateClient, trpc } from "@/trpc/server"
 
 export const dynamic = "force-dynamic"
 interface PageProps {
-    params: {shortId: string}
+    params: Promise<{shortId: string}>
 }
 
 

@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarGroup, SidebarMenu, SidebarMenuButton, 
 
 import Link from "next/link"
 import { LogOutIcon, VideoIcon } from "lucide-react"
-import { usePathname } from "next/navigation"
+
 import { Separator } from "@/components/ui/separator"
 import { StudioSidebarHeader } from "./studio-sidebar-header"
 
@@ -13,7 +13,6 @@ import { StudioSidebarHeader } from "./studio-sidebar-header"
 
 
 export const StudioSidbar = () => {
-    const pathname = usePathname()
     return (
         <Sidebar className="border-none pt-[4rem]" collapsible="icon">
             <SidebarContent className="bg-[#0f0f0f]" >
